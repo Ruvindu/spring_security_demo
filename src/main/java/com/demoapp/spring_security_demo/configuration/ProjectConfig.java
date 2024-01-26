@@ -2,8 +2,11 @@ package com.demoapp.spring_security_demo.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -16,31 +19,31 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 public class ProjectConfig extends WebSecurityConfigurerAdapter{
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        var userDetailsService = new InMemoryUserDetailsManager();
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        var userDetailsService = new InMemoryUserDetailsManager();
+//
+//        var user = User.withUsername("ruvindu")
+//                .password("1234")
+//                .authorities("read")
+//                .build();
+//
+//        userDetailsService.createUser(user);
+//
+//        return userDetailsService;
+//    }
+//
+//    @Bean
+//    public PasswordEncoder passwordEncoder() {
+//        return NoOpPasswordEncoder.getInstance();
+//    }
 
-        var user = User.withUsername("ruvindu")
-                .password("1234")
-                .authorities("read")
-                .build();
-
-        userDetailsService.createUser(user);
-
-        return userDetailsService;
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic();
-        http.authorizeHttpRequests()
-                .anyRequest().permitAll();
-    }
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.httpBasic();
+//        http.authorizeHttpRequests()
+//                .anyRequest().permitAll();
+//    }
 
 //    @Bean
 //    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -51,4 +54,20 @@ public class ProjectConfig extends WebSecurityConfigurerAdapter{
 //                .httpBasic(withDefaults());
 //        return http.build();
 //    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        var userDetailsService = new InMemoryUserDetailsManager();
+
+        var user = User.withUsername("ruvindu")
+                .password("123")
+                .authorities("read")
+                .build();
+
+        userDetailsService.createUser(user);
+
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(NoOpPasswordEncoder.getInstance());
+
+    }
 }
